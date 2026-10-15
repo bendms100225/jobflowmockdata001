@@ -1,0 +1,36 @@
+@page
+@model JobFlowOOH.Web.Pages.Development.DiagnosticsModel
+@{
+    ViewData["Title"] = "Development diagnostics";
+}
+
+<h1>Development diagnostics</h1>
+<dl>
+    <dt>dbo.employee count</dt>
+    <dd id="employee-count">@Model.EmployeeCount</dd>
+    <dt>Selectable engineer count</dt>
+    <dd id="selectable-count">@Model.SelectableCount</dd>
+    <dt>Configured development employee</dt>
+    <dd>none</dd>
+</dl>
+<p>Requested engineer source = dbo.employee</p>
+<p class="hint">No JobFlowWrites setting supplies an employee id. The development username is an office login and is not the requested engineer. dbo.employee has no proven active or inactive column, and it has no separate employee number. The selectable list is every dbo.employee row with a dbo.operative row and a display name. The OOH subsection is not required. The identifier is dbo.employee.idno. The display name is dbo.employee.name.</p>
+
+<table>
+    <caption>First 10 selectable engineers</caption>
+    <thead>
+        <tr>
+            <th>EmployeeId</th>
+            <th>DisplayName</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var engineer in Model.Sample)
+        {
+            <tr>
+                <td>@engineer.EmployeeId</td>
+                <td>@engineer.DisplayName</td>
+            </tr>
+        }
+    </tbody>
+</table>

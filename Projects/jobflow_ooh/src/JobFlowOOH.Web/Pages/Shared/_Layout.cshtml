@@ -1,0 +1,36 @@
+@inject IOptions<JobFlowWritesOptions> Writes
+@inject IConfiguration Configuration
+@inject IWebHostEnvironment HostEnvironment
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - JobFlow OOH</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    @if (string.Equals(Writes.Value.Mode, JobFlowWriteModes.ExperimentalDirectSql, StringComparison.OrdinalIgnoreCase))
+    {
+        <div class="poc-banner">
+            <p>Development proof of concept: this application writes experimental records directly to the standalone JobFlowDemo database.</p>
+            <p>This writer is an experiment. It is not production-ready and it is not a supplier-supported integration.</p>
+            @if (string.IsNullOrWhiteSpace(Configuration["AzureAd:ClientId"]))
+            {
+                <p>Microsoft Entra sign-in is not configured for this development session.</p>
+            }
+        </div>
+    }
+    <header class="site-header">
+        <a href="/jobs/new">New POC job</a>
+        <a href="/jobs/recent">Recent POC jobs</a>
+        @if (HostEnvironment.IsDevelopment())
+        {
+            <a href="/development/diagnostics">Development diagnostics</a>
+        }
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>

@@ -1,0 +1,52 @@
+@page "{jobNumber:int}"
+@model JobFlowOOH.Web.Pages.Jobs.CreatedModel
+@{
+    ViewData["Title"] = "Job created";
+    var category = Model.Job.CategoryCode is int code
+        ? $"Code {code} — {(Model.Job.CategoryHours?.ToString() ?? "unknown")} hours"
+        : "Unknown";
+}
+
+<h1>Development JobFlow record created</h1>
+<p>This record was created in the standalone JobFlowDemo development database. Engineer allocation, job planning and status workflow have not been created.</p>
+
+<dl>
+    <dt>JobFlowDemo job number</dt>
+    <dd>@Model.Job.JobNumber</dd>
+    <dt>Client</dt>
+    <dd>@Model.Job.ClientName (@Model.Job.ClientCode)</dd>
+    <dt>Site</dt>
+    <dd>@Model.Job.SiteName (@Model.Job.SiteCode)</dd>
+    <dt>PO / reference</dt>
+    <dd>@Model.Job.OrderNumber</dd>
+    <dt>Category</dt>
+    <dd>@category</dd>
+    <dt>Received time</dt>
+    <dd>@Model.Job.ReceivedText Europe/London</dd>
+    <dt>Deadline</dt>
+    <dd>@Model.Job.DeadlineText Europe/London</dd>
+    <dt>Requested engineer</dt>
+    <dd id="requested-engineer-name" data-employee-id="@Model.RequestedEngineerEmployeeId">@Model.RequestedEngineerName</dd>
+    @if (Model.RequestedEngineerDiscipline is string discipline)
+    {
+        <dt>Discipline / trade</dt>
+        <dd>@discipline</dd>
+    }
+    @if (Model.RequestedEngineerPhone is string phone)
+    {
+        <dt>Telephone</dt>
+        <dd>@phone</dd>
+    }
+    <dt>Section / subsection</dt>
+    <dd>@Model.Job.SectionName (@Model.Job.SectionCode) / @Model.Job.SubsectionName (@Model.Job.SubsectionCode)</dd>
+    <dt>Transaction correlation ID</dt>
+    <dd>@Model.CorrelationId</dd>
+</dl>
+<p class="warning">Requested engineer, not yet assigned in JobFlow.</p>
+
+<section>
+    <h2>Development diagnostics</h2>
+    <p>orders.jobtype was stored as @Model.Job.JobType. The business meaning of this value is unresolved.</p>
+    <p>Requested engineer source = dbo.employee. The stored employee id is dbo.employee.idno. This job does not allocate that engineer.</p>
+    <p>Temporary proof-of-concept mapping: orders.contactname is “@Model.Job.SiteContactName” and orders.rpby is “@Model.Job.ReportedBy”.</p>
+</section>

@@ -1,0 +1,43 @@
+@page
+@model JobFlowOOH.Web.Pages.Jobs.RecentModel
+@{
+    ViewData["Title"] = "Recent POC jobs";
+}
+
+<h1>Recent proof-of-concept jobs</h1>
+<p>Only JobFlowDemo rows marked POC-OOH- and POC- are listed. Automated POC-OOH-TEST- rows are hidden. Ordinary historical jobs are not shown.</p>
+
+@if (Model.Jobs.Count == 0)
+{
+    <p>No proof-of-concept jobs have been created.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Job</th>
+                <th>Client</th>
+                <th>Site</th>
+                <th>PO</th>
+                <th>Category</th>
+                <th>Received</th>
+                <th>Deadline</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in Model.Jobs)
+            {
+                <tr>
+                    <td><a href="/jobs/created/@job.JobNumber">@job.JobNumber</a></td>
+                    <td>@job.ClientName</td>
+                    <td>@job.SiteName</td>
+                    <td>@job.OrderNumber</td>
+                    <td>@(job.CategoryCode?.ToString() ?? "") — @(job.CategoryHours?.ToString() ?? "") h</td>
+                    <td>@job.ReceivedText</td>
+                    <td>@job.DeadlineText</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    color: #1b1b1b;
+    background: #f6f4f1;
+}
+
+.poc-banner {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #8a1c1c;
+    color: #fff;
+    padding: 0.75rem 1rem;
+}
+
+.poc-banner p {
+    margin: 0.25rem 0;
+}
+
+.site-header {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+main {
+    padding: 1rem;
+    max-width: 44rem;
+}
+
+label {
+    display: block;
+    margin-top: 0.9rem;
+    font-weight: 600;
+}
+
+input, select, textarea, button {
+    font: inherit;
+}
+
+input, select, textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.25rem;
+    padding: 0.5rem;
+}
+
+textarea {
+    min-height: 6rem;
+}
+
+button, .button {
+    margin-top: 1rem;
+    padding: 0.6rem 1rem;
+}
+
+.hint, .warning {
+    margin: 0.35rem 0 0;
+    font-weight: 400;
+}
+
+.warning {
+    color: #8a1c1c;
+}
+
+.errors {
+    background: #fff4f4;
+    border: 1px solid #8a1c1c;
+    padding: 0.75rem;
+}
+
+dl {
+    display: grid;
+    grid-template-columns: 12rem 1fr;
+    gap: 0.35rem 0.75rem;
+}
+
+dt {
+    font-weight: 600;
+}
+
+dd {
+    margin: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.4rem;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+}
+
+.prefix {
+    font-family: Consolas, monospace;
+}

@@ -1,0 +1,138 @@
+@page
+@using System.Text.Json
+@model JobFlowOOH.Web.Pages.Jobs.NewModel
+@{
+    ViewData["Title"] = "New POC job";
+}
+
+<h1>New proof-of-concept job</h1>
+<p class="warning">Engineer allocation, job planning and status workflow are not created.</p>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="errors" asp-validation-summary="All"></div>
+}
+
+<form method="post" id="job-form" action="/jobs/new">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="IdempotencyKey" id="idempotency" />
+
+    <label for="client">Client</label>
+    <select id="client" asp-for="ClientCode">
+        <option value="">Select a client</option>
+        @foreach (var client in Model.Clients)
+        {
+            <option value="@client.Code">@client.Name (@client.Code)</option>
+        }
+    </select>
+
+    <label for="site">Site</label>
+    <select id="site" asp-for="SiteCode">
+        <option value="">Select a site</option>
+        @foreach (var site in Model.Sites)
+        {
+            <option value="@site.Code">@site.Name, @site.Town @site.Postcode (@site.Code)</option>
+        }
+    </select>
+    <p class="hint">Changing the client reloads the sites for that client.</p>
+
+    <label for="description">Description <span class="prefix">POC-OOH-</span></label>
+    <textarea id="description" asp-for="Description" maxlength="3990"></textarea>
+
+    <label for="order">PO / reference <span class="prefix">POC-</span></label>
+    <input id="order" asp-for="OrderNumber" maxlength="26" />
+
+    <label for="reported">Reported by</label>
+    <input id="reported" asp-for="ReportedBy" maxlength="50" />
+    <p class="hint">Temporary proof-of-concept mapping: this is stored in orders.rpby.</p>
+
+    <label for="contact">Site contact</label>
+    <input id="contact" asp-for="SiteContactName" maxlength="50" />
+    <p class="hint">Temporary proof-of-concept mapping: this is stored in orders.contactname.</p>
+
+    <label for="received">Received time (Europe/London)</label>
+    <input id="received" asp-for="ReceivedLocal" type="datetime-local" />
+
+    <label for="category">Response category</label>
+    <select id="category" asp-for="ResponseCategoryCode">
+        <option value="">Select a category</option>
+        @foreach (var category in Model.Categories)
+        {
+            <option value="@category.Code">Code @category.Code — @(category.Hours?.ToString() ?? "no") hours</option>
+        }
+    </select>
+
+    <label for="section">Section</label>
+    <select id="section" asp-for="SectionCode">
+        <option value="">Select a section</option>
+        @foreach (var section in Model.Sections)
+        {
+            <option value="@(section.Code)">@(section.Name) (@(section.Code))</option>
+        }
+    </select>
+
+    <label for="subsection">Subsection</label>
+    <select id="subsection" asp-for="SubsectionCode">
+        <option value="">Select a subsection</option>
+    </select>
+    <p class="hint">OOH reference rows are not created. Choose an existing section and its subsection.</p>
+
+    <label for="engineer">Requested engineer</label>
+    <select id="engineer" asp-for="RequestedEngineerEmployeeId">
+        <option value="">Select an engineer</option>
+        @foreach (var engineer in Model.Engineers)
+        {
+            <option value="@engineer.EmployeeId">@engineer.DisplayName</option>
+        }
+    </select>
+    <p class="hint">Names come from dbo.employee. The submitted value is the employee id, dbo.employee.idno. OOH eligibility is not configured.</p>
+    <p class="warning">Requested engineer, not yet assigned in JobFlow.</p>
+
+    <button type="submit" id="load-sites" formaction="?handler=LoadSites" formnovalidate>Load sites</button>
+    <button type="submit" id="review-job" formaction="/jobs/new">Review job</button>
+</form>
+
+<script>
+    const subsections = @Html.Raw(Model.SubsectionJson);
+    const section = document.getElementById("section");
+    const subsection = document.getElementById("subsection");
+    const selectedSubsection = @Html.Raw(JsonSerializer.Serialize(Model.SubsectionCode));
+
+    function filterSubsections() {
+        const code = section.value;
+        const current = subsection.value || selectedSubsection;
+        subsection.innerHTML = "";
+        const blank = document.createElement("option");
+        blank.value = "";
+        blank.textContent = "Select a subsection";
+        subsection.appendChild(blank);
+        for (const row of subsections) {
+            if (row.sectionCode !== code) {
+                continue;
+            }
+            const option = document.createElement("option");
+            option.value = row.code;
+            option.textContent = (row.name || row.code) + " (" + row.code + ")";
+            subsection.appendChild(option);
+        }
+        if ([...subsection.options].some(option => option.value === current)) {
+            subsection.value = current;
+        }
+    }
+
+    section.addEventListener("change", filterSubsections);
+    filterSubsections();
+
+    document.getElementById("client").addEventListener("change", function () {
+        const form = document.getElementById("job-form");
+        form.action = "?handler=LoadSites";
+        form.noValidate = true;
+        form.submit();
+    });
+
+    document.getElementById("job-form").addEventListener("submit", function (event) {
+        if (event.submitter && event.submitter.id === "review-job") {
+            event.submitter.disabled = true;
+        }
+    });
+</script>

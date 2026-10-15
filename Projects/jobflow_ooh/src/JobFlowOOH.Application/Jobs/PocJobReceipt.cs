@@ -1,0 +1,26 @@
+namespace JobFlowOOH.Application.Jobs;
+
+public sealed record PocJobReceipt(
+    int JobNumber,
+    string CorrelationId,
+    string ClientCode,
+    string? ClientName,
+    string SiteCode,
+    string? SiteName,
+    string OrderNumber,
+    string Description,
+    int CategoryCode,
+    int CategoryHours,
+    string? CategoryName,
+    DateTimeOffset ReceivedAt,
+    DateTimeOffset Deadline,
+    string RequestedEngineer,
+    string SectionCode,
+    string? SectionName,
+    string SubsectionCode,
+    string? SubsectionName,
+    int JobType,
+    string SiteContactName,
+    string ReportedBy,
+    int RequestedEngineerEmployeeId = 0,
+    string? RequestedEngineerName = null);

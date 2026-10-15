@@ -1,0 +1,73 @@
+@page
+@model JobFlowOOH.Web.Pages.Jobs.ReviewModel
+@{
+    ViewData["Title"] = "Review POC job";
+}
+
+<h1>Review proof-of-concept job</h1>
+<p class="warning">Engineer allocation, job planning and status workflow are not created.</p>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="errors" asp-validation-summary="All"></div>
+}
+
+<dl>
+    <dt>Client</dt>
+    <dd>@Model.ClientText</dd>
+    <dt>Site</dt>
+    <dd>@Model.SiteText</dd>
+    <dt>Description</dt>
+    <dd>@Model.Draft.Description</dd>
+    <dt>PO / reference</dt>
+    <dd>@Model.Draft.OrderNumber</dd>
+    <dt>Reported by</dt>
+    <dd>@Model.Draft.ReportedBy</dd>
+    <dt>Site contact</dt>
+    <dd>@Model.Draft.SiteContactName</dd>
+    <dt>Received time</dt>
+    <dd>@Model.Draft.ReceivedLocal Europe/London</dd>
+    <dt>Category</dt>
+    <dd>@Model.CategoryText</dd>
+    <dt>Section / subsection</dt>
+    <dd>@Model.SectionText</dd>
+    <dt>Requested engineer</dt>
+    <dd id="requested-engineer-name">@(Model.RequestedEngineer?.DisplayName ?? RequestedEngineerText.SelectValid)</dd>
+    @if (Model.RequestedEngineer?.Discipline is string discipline)
+    {
+        <dt>Discipline / trade</dt>
+        <dd>@discipline</dd>
+    }
+    @if (Model.RequestedEngineer?.Phone is string phone)
+    {
+        <dt>Telephone</dt>
+        <dd>@phone</dd>
+    }
+</dl>
+<p class="warning">Requested engineer, not yet assigned in JobFlow.</p>
+
+@if (Model.CanCreate)
+{
+    <form method="post" action="/jobs/review">
+        @Html.AntiForgeryToken()
+        <label>
+            <input asp-for="ConfirmExperimentalWrite" />
+            Create an experimental record in the standalone JobFlowDemo database.
+        </label>
+        <button type="submit" id="submit-job">Create experimental job</button>
+    </form>
+}
+
+<p><a href="/jobs/new?resume=1">Return to edit</a></p>
+
+<script>
+    const form = document.querySelector("form");
+    if (form) {
+        form.addEventListener("submit", function () {
+            const button = document.getElementById("submit-job");
+            if (button) {
+                button.disabled = true;
+            }
+        });
+    }
+</script>
